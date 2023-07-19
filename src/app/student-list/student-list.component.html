@@ -1,0 +1,42 @@
+<app-page-container title="Students">
+  <ng-container *ngIf="students$ | async as vm">
+    <div>
+      <div>
+        <button class="btn btn-outline" (click)="studentService.refreshList()" [disabled]="vm.loading">Refresh</button>
+        <a [routerLink]="'/student-search'">Search Student</a>
+      </div>
+
+      <clr-datagrid
+        class="min-h-[200px]"
+        (clrDgRefresh)="refresh($event)"
+        [clrDgLoading]="vm.loading === true"
+        [(clrDgSingleSelected)]="selectedStudent"
+      >
+        <clr-dg-column>Student ID</clr-dg-column>
+        <clr-dg-column [clrDgField]="'firstName'">First Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'lastName'">Last Name</clr-dg-column>
+        <clr-dg-column [clrDgField]="'age'">age</clr-dg-column>
+        <clr-dg-column [clrDgField]="'lastModifiedDate'">Last Modified Date</clr-dg-column>
+
+        <clr-dg-placeholder>No data found</clr-dg-placeholder>
+
+        <clr-dg-row *ngFor="let student of vm.data" [clrDgItem]="student">
+          <clr-dg-cell>
+            <a [routerLink]="student.id">{{ student.id }}</a>
+          </clr-dg-cell>
+          <clr-dg-cell>{{ student.firstName }}</clr-dg-cell>
+          <clr-dg-cell>{{ student.lastName }}</clr-dg-cell>
+          <clr-dg-cell>{{ student.age }}</clr-dg-cell>
+          <clr-dg-cell>{{ student.lastModifiedDate | date }}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+          {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} of {{ total$ | async }} items
+          <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems]="(total$ | async) || 0"> </clr-dg-pagination>
+        </clr-dg-footer>
+      </clr-datagrid>
+    </div>
+
+    <app-alert *ngIf="vm.error" [error]="vm.error" class="mb-4"></app-alert>
+  </ng-container>
+</app-page-container>

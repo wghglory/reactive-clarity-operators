@@ -1,0 +1,12 @@
+<clr-input-container>
+  <label>Search</label>
+  <input [formControl]="searchControl" clrInput />
+</clr-input-container>
+
+<div class="mt-6" *ngIf="search$ | async as vm">
+  <div *ngIf="vm.loading">Loading...</div>
+  <ul *ngIf="vm.data as data">
+    <li *ngFor="let item of data.results">{{ item.email }}</li>
+  </ul>
+  <div *ngIf="vm.error as error">{{ error.message }}</div>
+</div>
